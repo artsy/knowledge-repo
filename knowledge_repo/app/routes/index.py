@@ -17,6 +17,7 @@ from ..utils.posts import get_posts
 from ..models import Post, Tag, User, PageView
 from ..utils.requests import from_request_get_feed_params
 from ..utils.render import render_post_tldr
+from ..utils.auth import requires_auth
 
 blueprint = Blueprint(
     'index', __name__, template_folder='../templates', static_folder='../static')
@@ -30,6 +31,7 @@ def has_no_empty_params(rule):
 
 @blueprint.route("/site-map")
 @PageView.logged
+@requires_auth
 def site_map():
     links = []
     for rule in current_app.url_map.iter_rules():
@@ -44,12 +46,14 @@ def site_map():
 
 @blueprint.route('/')
 @PageView.logged
+@requires_auth
 def render_index():
     return redirect('/feed')
 
 
 @blueprint.route('/favorites')
 @PageView.logged
+@requires_auth
 def render_favorites():
     """ Renders the index-feed view for posts that are liked """
 
@@ -76,6 +80,7 @@ def render_favorites():
 
 @blueprint.route('/feed')
 @PageView.logged
+@requires_auth
 def render_feed():
     """ Renders the index-feed view """
     feed_params = from_request_get_feed_params(request)
@@ -93,6 +98,7 @@ def render_feed():
 
 @blueprint.route('/table')
 @PageView.logged
+@requires_auth
 def render_table():
     """Renders the index-table view"""
     feed_params = from_request_get_feed_params(request)
@@ -108,6 +114,7 @@ def render_table():
 
 @blueprint.route('/cluster')
 @PageView.logged
+@requires_auth
 def render_cluster():
     """ Render the cluster view """
     # we don't use the from_request_get_feed_params because some of the
@@ -189,6 +196,7 @@ def render_cluster():
 @blueprint.route('/create')
 @blueprint.route('/create/<knowledge_format>')
 @PageView.logged
+@requires_auth
 def create(knowledge_format=None):
     """ Renders the create knowledge view """
     if knowledge_format is None:

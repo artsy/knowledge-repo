@@ -5,6 +5,7 @@ from sqlalchemy import and_
 
 from ..proxies import db_session
 from ..models import Group, Post, PageView, User, assoc_group_user
+from ..utils.auth import requires_auth
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -16,6 +17,7 @@ blueprint = Blueprint('groups', __name__,
 
 @blueprint.route('/post_groups', methods=['GET'])
 @PageView.logged
+@requires_auth
 def groups_for_posts():
     """Given a post_id, return a page where you see a list of groups,
        and can view the group members and add people to groups
@@ -30,6 +32,7 @@ def groups_for_posts():
 
 @blueprint.route('/view_group_users', methods=['GET'])
 @PageView.logged
+@requires_auth
 def view_group_users():
     """Given a group_id, return a page with a list of group members"""
     group_id = request.args.get('group_id', 0)
@@ -42,6 +45,7 @@ def view_group_users():
 
 @blueprint.route('/add_group_users', methods=['GET'])
 @PageView.logged
+@requires_auth
 def add_group_users():
     """Given a group_id, show a page where users can be added"""
     group_id = request.args.get('group_id', 0)
@@ -54,6 +58,7 @@ def add_group_users():
 
 @blueprint.route('/add_users_to_group', methods=['POST', 'GET'])
 @PageView.logged
+@requires_auth
 def add_users_to_group():
     group_id = request.args.get('group_id', 0)
     users = request.get_json()
@@ -78,6 +83,7 @@ def add_users_to_group():
 
 @blueprint.route('/delete_user_from_group', methods=['POST', 'GET'])
 @PageView.logged
+@requires_auth
 def delete_user_from_group():
     group_id = request.args.get('group_id', 0)
     user_id = request.get_json()
@@ -94,6 +100,7 @@ def delete_user_from_group():
 
 @blueprint.route('/all_groups', methods=['POST', 'GET'])
 @PageView.logged
+@requires_auth
 def all_groups():
     groups = db_session.query(Group).all()
     return render_template('all_groups.html', groups=groups)
@@ -101,6 +108,7 @@ def all_groups():
 
 @blueprint.route('/add_groups', methods=['POST', 'GET'])
 @PageView.logged
+@requires_auth
 def add_groups():
     groups = request.get_json()
     for group_name in groups:

@@ -4,6 +4,7 @@ from flask import request, url_for, redirect, render_template, current_app, Blue
 from ..proxies import db_session, current_repo
 from ..models import User, Post, PageView
 from ..utils.render import render_post, render_comment, render_post_raw
+from ..utils.auth import requires_auth
 
 
 logging.basicConfig(level=logging.INFO)
@@ -16,6 +17,7 @@ blueprint = Blueprint('posts', __name__,
 
 @blueprint.route('/post/<path:path>', methods=['GET'])
 @PageView.logged
+@requires_auth
 def render(path):
     """ Render the knowledge post with all the related formatting """
 
@@ -109,6 +111,7 @@ def render(path):
 
 @blueprint.route('/post/preview/<path:path>', methods=['GET'])
 @PageView.logged
+@requires_auth
 def render_preview(path):
     return _render_preview(path, 'markdown-rendered.html')
 
@@ -162,6 +165,7 @@ def render(path):
 # DEPRECATED: Legacy route for the /render endpoint to allow old bookmarks to function
 @blueprint.route('/render', methods=['GET'])
 @PageView.logged
+@requires_auth
 def render_legacy():
     path = request.args.get('markdown', '')
     return redirect(url_for('.render', path=path), code=302)
@@ -169,6 +173,7 @@ def render_legacy():
 
 @blueprint.route('/about', methods=['GET'])
 @PageView.logged
+@requires_auth
 def about():
     """Renders about page. This is the html version of REAMDE.md"""
     return render_template("about.html")

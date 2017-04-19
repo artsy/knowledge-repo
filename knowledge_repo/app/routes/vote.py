@@ -10,6 +10,7 @@ from sqlalchemy import and_
 
 from ..app import db_session
 from ..models import Post, Vote, PageView
+from ..utils.auth import requires_auth
 
 
 blueprint = Blueprint(
@@ -18,6 +19,7 @@ blueprint = Blueprint(
 
 @blueprint.route('/like')
 @PageView.logged
+@requires_auth
 def like_post():
     """ Like a post """
     try:
@@ -38,6 +40,7 @@ def like_post():
 
 @blueprint.route('/unlike')
 @PageView.logged
+@requires_auth
 def unlike_post():
     """ Un-like a post """
     try:

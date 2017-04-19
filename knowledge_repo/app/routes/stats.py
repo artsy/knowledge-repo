@@ -7,6 +7,7 @@ from sqlalchemy import func
 from ..app import db_session
 from ..models import PageView, Post
 from ..utils.requests import from_request_get_feed_params
+from ..utils.auth import requires_auth
 
 blueprint = Blueprint('stats', __name__,
                       template_folder='../templates', static_folder='../static')
@@ -19,6 +20,7 @@ def _round_date(d):
 
 @blueprint.route('/post_stats', methods=['GET'])
 @PageView.logged
+@requires_auth
 def post_stats():
     """ Return the total views, distinct views, total likes and total comments
         for a given post """
@@ -36,6 +38,7 @@ def post_stats():
 
 @blueprint.route('/stats', methods=['GET'])
 @PageView.logged
+@requires_auth
 def stats():
     """ Render the stats page, creating graphs for
         pageviews daily, weekly, post creation weekly and

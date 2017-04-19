@@ -8,6 +8,7 @@ import knowledge_repo
 from flask import request, current_app, Blueprint
 from ..proxies import current_repo
 from ..index import get_indexed_revisions, is_indexing
+from ..utils.auth import requires_auth
 
 
 logging.basicConfig(level=logging.INFO)
@@ -19,6 +20,7 @@ blueprint = Blueprint('debug', __name__,
 
 
 @blueprint.route('/debug/versions', methods=['GET'])
+@requires_auth
 def show_versions():
     version_keys = ['__version__', 'VERSION', 'version', '__VERSION__']
 
@@ -59,6 +61,7 @@ def show_versions():
 
 
 @blueprint.route('/debug/force_reindex', methods=['GET'])
+@requires_auth
 def force_reindex():
     reindex = bool(request.args.get('reindex', ''))
     current_app.db_update_index(reindex=reindex)
